@@ -2,6 +2,7 @@ package com.agilefreamwork.eurekaclientone.common.configure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -25,20 +26,17 @@ import java.util.Map;
 @EnableWebMvc
 public class ViewResolverConfig extends WebMvcConfigurerAdapter {
 
-    @Value("${agile.mvc.upload.max-upload-size}")
-    private int maxUploadSize;
-
-    @Value("${agile.mvc.upload.default-encoding}")
-    private String defaultEncoding;
+    private final UploadSettings uploadSettings;
 
     private final JsonViewResolver jsonViewResolver;
 
     private final XmlViewResolver xmlViewResolver;
 
     @Autowired
-    public ViewResolverConfig(JsonViewResolver jsonViewResolver, XmlViewResolver xmlViewResolver) {
+    public ViewResolverConfig(JsonViewResolver jsonViewResolver, XmlViewResolver xmlViewResolver, UploadSettings uploadSettings) {
         this.jsonViewResolver = jsonViewResolver;
         this.xmlViewResolver = xmlViewResolver;
+        this.uploadSettings = uploadSettings;
     }
 
     @Bean
@@ -55,10 +53,11 @@ public class ViewResolverConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public CommonsMultipartResolver contentCommonsMultipartResolver(){
+    @ConfigurationProperties(prefix = "agile.mvc.upload")
+    public CommonsMultipartResolver commonsMultipartResolver(){
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSize(maxUploadSize);
-        resolver.setDefaultEncoding(defaultEncoding);
+        resolver.setMaxUploadSize(uploadSettings.getMaxUploadSize());
+        resolver.setDefaultEncoding(uploadSettings.getDefaultEncoding());
         return resolver;
     }
 

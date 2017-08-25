@@ -6,15 +6,16 @@ import com.agilefreamwork.eurekaclientone.common.server.ServiceInterface;
 import com.agilefreamwork.eurekaclientone.common.util.ObjectUtil;
 import com.agilefreamwork.eurekaclientone.common.util.ServletUtil;
 import com.agilefreamwork.eurekaclientone.common.util.StringUtil;
+import com.netflix.discovery.EurekaClient;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -27,6 +28,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * 主控制层
@@ -46,10 +48,27 @@ public class MainController {
     @Value("${spring.application.name}")
     private String moduleName;
 
+    private final EurekaClient eurekaClient;
+
+    private final DiscoveryClient discoveryClient;
+
     @Autowired
-    public MainController(ApplicationContext applicationContext) {
+    public MainController(ApplicationContext applicationContext, @Qualifier("eurekaClient") EurekaClient eurekaClient, DiscoveryClient discoveryClient) {
         this.applicationContext = applicationContext;
+        this.eurekaClient = eurekaClient;
+        this.discoveryClient = discoveryClient;
     }
+
+    @GetMapping("/get-home-page-url")
+    public String homePageUrl(){
+        return this.eurekaClient.getNextServerFromEureka("client-one",false).getHomePageUrl();
+    }
+
+    @GetMapping("/get-eureka-client-info")
+    public List<ServiceInstance> eurekaInfo(){
+        return this.discoveryClient.getInstances("client-one");
+    }
+
     /**
      * 非法请求处理器
      * @param request 请求对象
@@ -230,8 +249,8 @@ public class MainController {
      * @throws IOException 流异常
      */
     private void downLoadFile(HttpServletResponse response,String path,String name) throws IOException {
-        java.io.BufferedInputStream bis = null;
-        java.io.BufferedOutputStream bos = null;
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
         try {
             long fileLength = new File(path).length();
             response.setContentType("application/force-download");
