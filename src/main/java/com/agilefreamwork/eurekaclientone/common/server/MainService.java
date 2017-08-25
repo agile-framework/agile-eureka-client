@@ -1,6 +1,6 @@
 package com.agilefreamwork.eurekaclientone.common.server;
 
-import com.agilefreamwork.eurekaclientone.common.base.ExceptionHandler;
+import com.agilefreamwork.eurekaclientone.common.configure.ExceptionHandler;
 import com.agilefreamwork.eurekaclientone.common.base.RETURN;
 import com.agilefreamwork.eurekaclientone.common.util.ObjectUtil;
 

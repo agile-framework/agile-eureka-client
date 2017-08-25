@@ -1,5 +1,7 @@
-package com.agilefreamwork.eurekaclientone.common.base;
+package com.agilefreamwork.eurekaclientone.common.configure;
 
+import com.agilefreamwork.eurekaclientone.common.base.Head;
+import com.agilefreamwork.eurekaclientone.common.base.RETURN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;

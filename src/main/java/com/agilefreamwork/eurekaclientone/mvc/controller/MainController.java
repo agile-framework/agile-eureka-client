@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,7 @@ import java.util.List;
  */
 //标识控制层
 @Controller
+@Scope("prototype")
 public class MainController {
 
     //日志工具
@@ -59,11 +61,19 @@ public class MainController {
         this.discoveryClient = discoveryClient;
     }
 
+    /**
+     * 获取微服务主页地址
+     * @return 微服务主页地址
+     */
     @GetMapping("/get-home-page-url")
     public String homePageUrl(){
         return this.eurekaClient.getNextServerFromEureka("client-one",false).getHomePageUrl();
     }
 
+    /**
+     * 获取eureka客户端信息
+     * @return eureka客户端信息
+     */
     @GetMapping("/get-eureka-client-info")
     public List<ServiceInstance> eurekaInfo(){
         return this.discoveryClient.getInstances("client-one");

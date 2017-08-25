@@ -9,6 +9,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
  */
 @Component
 public class JsonView  extends MappingJackson2JsonView {
+
     public JsonView() {
         Jackson2ObjectMapperFactoryBean jackson2ObjectMapperFactoryBean = new Jackson2ObjectMapperFactoryBean();
         jackson2ObjectMapperFactoryBean.setIndentOutput(true);
