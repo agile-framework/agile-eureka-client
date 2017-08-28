@@ -11,12 +11,17 @@ public class UploadSettings {
     /**
      * 最大上传数量
      */
-    private int maxUploadSize = 204800;
+    private int maxUploadSize;
 
     /**
      * 编码
      */
-    private String defaultEncoding = "utf-8";
+    private String defaultEncoding;
+
+    public UploadSettings() {
+        this.maxUploadSize = 204800;
+        this.defaultEncoding = "utf-8";
+    }
 
     public int getMaxUploadSize() {
         return maxUploadSize;

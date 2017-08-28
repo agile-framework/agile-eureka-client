@@ -3,6 +3,9 @@ package com.agilefreamwork.eurekaclientone.common.server;
 import com.agilefreamwork.eurekaclientone.common.configure.ExceptionHandler;
 import com.agilefreamwork.eurekaclientone.common.base.RETURN;
 import com.agilefreamwork.eurekaclientone.common.util.ObjectUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.PageRequest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,7 +18,7 @@ import java.util.LinkedHashMap;
  */
 public abstract class MainService extends ExceptionHandler implements ServiceInterface {
     //日志工具
-//    private Logger logger = LogManager.getLogger(this.getClass());
+    private Logger logger = LogManager.getLogger(this.getClass());
     //输入
     private HashMap<String, Object> inParam = new LinkedHashMap<>();
     //输出
@@ -204,15 +207,15 @@ public abstract class MainService extends ExceptionHandler implements ServiceInt
         this.outParam.put(key,value);
     }
 
-//    public PageRequest getPageInfo(){
-//        int page = 1,size =10;
-//
-//        if(this.containsKey("page")){
-//            page = this.getInParamOfInteger("page");
-//        }
-//        if(this.containsKey("size")){
-//            size = this.getInParamOfInteger("size");
-//        }
-//        return PageRequest.of(page,size);
-//    }
+    protected PageRequest getPageInfo(){
+        int page = 1,size =10;
+
+        if(this.containsKey("page")){
+            page = this.getInParamOfInteger("page");
+        }
+        if(this.containsKey("size")){
+            size = this.getInParamOfInteger("size");
+        }
+        return new PageRequest(page,size);
+    }
 }

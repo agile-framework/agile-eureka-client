@@ -1,5 +1,6 @@
 package com.agilefreamwork.eurekaclientone.mvc.model.entity;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Objects;
@@ -7,7 +8,8 @@ import java.util.Objects;
 /**
 * Created by 佟盟
 */
-
+@Entity
+@Table(name = "sys_users",  catalog = "agile_db")
 public class SysUsersEntity implements Serializable {
 
     //序列
@@ -68,6 +70,9 @@ public class SysUsersEntity implements Serializable {
         this.credentialsNonExpired = credentialsNonExpired;
     }
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "sys_users_id" )
     public Integer getSysUsersId() {
         return sysUsersId;
     }
@@ -76,6 +81,8 @@ public class SysUsersEntity implements Serializable {
         this.sysUsersId = sysUsersId;
     }
 
+    @Basic
+    @Column(name = "username" )
     public String getUsername() {
         return username;
     }
@@ -84,6 +91,8 @@ public class SysUsersEntity implements Serializable {
         this.username = username;
     }
 
+    @Basic
+    @Column(name = "name" , nullable = false )
     public String getName() {
         return name;
     }
@@ -92,6 +101,8 @@ public class SysUsersEntity implements Serializable {
         this.name = name;
     }
 
+    @Basic
+    @Column(name = "password" )
     public String getPassword() {
         return password;
     }
@@ -100,6 +111,8 @@ public class SysUsersEntity implements Serializable {
         this.password = password;
     }
 
+    @Basic
+    @Column(name = "dt_create" , nullable = false )
     public Date getDtCreate() {
         return dtCreate;
     }
@@ -108,6 +121,8 @@ public class SysUsersEntity implements Serializable {
         this.dtCreate = dtCreate;
     }
 
+    @Basic
+    @Column(name = "last_login" , nullable = false )
     public Date getLastLogin() {
         return lastLogin;
     }
@@ -116,6 +131,8 @@ public class SysUsersEntity implements Serializable {
         this.lastLogin = lastLogin;
     }
 
+    @Basic
+    @Column(name = "deadline" , nullable = false )
     public Date getDeadline() {
         return deadline;
     }
@@ -124,6 +141,8 @@ public class SysUsersEntity implements Serializable {
         this.deadline = deadline;
     }
 
+    @Basic
+    @Column(name = "login_ip" , nullable = false )
     public String getLoginIp() {
         return loginIp;
     }
@@ -132,6 +151,8 @@ public class SysUsersEntity implements Serializable {
         this.loginIp = loginIp;
     }
 
+    @Basic
+    @Column(name = "v_qzjgid" , nullable = false )
     public String getVQzjgid() {
         return vQzjgid;
     }
@@ -140,6 +161,8 @@ public class SysUsersEntity implements Serializable {
         this.vQzjgid = vQzjgid;
     }
 
+    @Basic
+    @Column(name = "v_qzjgmc" , nullable = false )
     public String getVQzjgmc() {
         return vQzjgmc;
     }
@@ -148,6 +171,8 @@ public class SysUsersEntity implements Serializable {
         this.vQzjgmc = vQzjgmc;
     }
 
+    @Basic
+    @Column(name = "dep_id" , nullable = false )
     public String getDepId() {
         return depId;
     }
@@ -156,6 +181,8 @@ public class SysUsersEntity implements Serializable {
         this.depId = depId;
     }
 
+    @Basic
+    @Column(name = "dep_name" , nullable = false )
     public String getDepName() {
         return depName;
     }
@@ -164,6 +191,8 @@ public class SysUsersEntity implements Serializable {
         this.depName = depName;
     }
 
+    @Basic
+    @Column(name = "enabled" , nullable = false )
     public boolean getEnabled() {
         return enabled;
     }
@@ -172,6 +201,8 @@ public class SysUsersEntity implements Serializable {
         this.enabled = enabled;
     }
 
+    @Basic
+    @Column(name = "account_non_expired" , nullable = false )
     public boolean getAccountNonExpired() {
         return accountNonExpired;
     }
@@ -180,6 +211,8 @@ public class SysUsersEntity implements Serializable {
         this.accountNonExpired = accountNonExpired;
     }
 
+    @Basic
+    @Column(name = "account_non_locked" , nullable = false )
     public boolean getAccountNonLocked() {
         return accountNonLocked;
     }
@@ -188,6 +221,8 @@ public class SysUsersEntity implements Serializable {
         this.accountNonLocked = accountNonLocked;
     }
 
+    @Basic
+    @Column(name = "credentials_non_expired" , nullable = false )
     public boolean getCredentialsNonExpired() {
         return credentialsNonExpired;
     }

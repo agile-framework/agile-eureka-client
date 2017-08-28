@@ -7,13 +7,14 @@ import com.agilefreamwork.eurekaclientone.common.util.ObjectUtil;
 import com.agilefreamwork.eurekaclientone.common.util.ServletUtil;
 import com.agilefreamwork.eurekaclientone.common.util.StringUtil;
 import com.netflix.discovery.EurekaClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -36,13 +37,12 @@ import java.util.List;
  * 主控制层
  * Created by 佟盟 on 2017/8/22
  */
-//标识控制层
 @Controller
 @Scope("prototype")
 public class MainController {
 
     //日志工具
-//    private org.apache.logging.log4j.Logger logger = LogManager.getLogger(this.getClass());
+    private Logger logger = LogManager.getLogger(this.getClass());
     //上下文
     private final ApplicationContext applicationContext;
     //服务对象

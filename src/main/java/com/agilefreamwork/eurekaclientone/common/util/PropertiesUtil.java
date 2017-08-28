@@ -6,6 +6,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -74,5 +75,13 @@ public class PropertiesUtil {
      */
     public String getProperty(String key){
         return this.properties.getProperty(key);
+    }
+
+    public static Properties cast(Map<String,String> map){
+        Properties p = new Properties();
+        for (Map.Entry<String,String> entity : map.entrySet()) {
+            p.setProperty(entity.getKey(),entity.getValue());
+        }
+        return p;
     }
 }
