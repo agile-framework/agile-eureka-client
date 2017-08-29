@@ -3,27 +3,37 @@ package com.agilefreamwork.eurekaclientone.mvc.service;
 import com.agilefreamwork.eurekaclientone.common.base.RETURN;
 import com.agilefreamwork.eurekaclientone.common.server.MainService;
 import com.agilefreamwork.eurekaclientone.common.util.FactoryUtil;
+import com.agilefreamwork.eurekaclientone.common.util.JSONUtil;
 import com.agilefreamwork.eurekaclientone.common.util.ObjectUtil;
 import com.agilefreamwork.eurekaclientone.mvc.model.dao.DictionaryMainRepository;
 import com.agilefreamwork.eurekaclientone.mvc.model.entity.DictionaryMainEntity;
+import com.agilefreamwork.eurekaclientone.restInterfaces.ClientTwoInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
+
 
 /**
 * Created by 佟盟
 */
 @Service
 public class DictionaryMainService extends MainService {
+    @Autowired
+    private ClientTwoInterface clientTwoInterface;
 
     /**
      * 新增
      * 地址：http://localhost:8080/agile/DictionaryMainService/save
      */
     public RETURN save() {
-        DictionaryMainRepository dao = FactoryUtil.getBean(DictionaryMainRepository.class);
-        DictionaryMainEntity entity = ObjectUtil.getObjectFromMap(DictionaryMainEntity.class, this.getInParam());
-        if (entity.hashCode() == 0) return RETURN.PARAMETER_ERROR;
-        dao.save(entity);
+        String a = clientTwoInterface.homePageUrl();
+        this.setOutParam("a",JSONUtil.parse(a));
         return RETURN.SUCCESS;
+//        DictionaryMainRepository dao = FactoryUtil.getBean(DictionaryMainRepository.class);
+//        DictionaryMainEntity entity = ObjectUtil.getObjectFromMap(DictionaryMainEntity.class, this.getInParam());
+//        if (entity.hashCode() == 0) return RETURN.PARAMETER_ERROR;
+//        dao.save(entity);
+//        return RETURN.SUCCESS;
     }
 
     /**

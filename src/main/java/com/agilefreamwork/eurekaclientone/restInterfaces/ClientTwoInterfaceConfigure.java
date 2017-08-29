@@ -4,6 +4,7 @@ import com.agilefreamwork.eurekaclientone.common.annotation.ExcludeComponentScan
 import feign.Contract;
 import feign.Logger;
 import feign.auth.BasicAuthRequestInterceptor;
+import org.springframework.cloud.netflix.feign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 public class ClientTwoInterfaceConfigure {
     @Bean
     public Contract feignContract() {
-        return new feign.Contract.Default();
+        return new SpringMvcContract();
     }
 
     @Bean

@@ -88,7 +88,7 @@ public class MainController {
     @RequestMapping(value = {"/","/*","/*/*","/*/*/*/*/**"})
     public ModelAndView processor(HttpServletRequest request){
         //初始化参数
-        ModelAndView modelAndView = new ModelAndView();//响应视图对象
+        ModelAndView modelAndView = new ModelAndView();
 
         //判断模块存在
         modelAndView.addObject("head",new Head(RETURN.NO_COMPLETE,request));

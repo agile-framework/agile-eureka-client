@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
@@ -31,6 +32,8 @@ import org.springframework.context.annotation.FilterType;
 @ServletComponentScan
 //开启缓存功能
 @EnableCaching
+//开启feign组件
+@EnableFeignClients
 public class EurekaClientOneApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EurekaClientOneApplication.class, args);
