@@ -24,10 +24,10 @@ public class Head implements Serializable {
         this.code = returnState.getCode();
         this.msg = returnState.getMsg();
 
-        logger.info("\n" + "[接口调用][调用方]" + ip +"\n"
-                + "[接口调用][URL]" + url +"\n"
-                + "[接口调用][参数]" + request.getQueryString() +"\n"
-                + "[接口调用][响应]" + msg +"\n"
+        logger.info("\n" + "[能力调用][调用方]" + ip +"\n"
+                + "[能力调用][URL]" + url +"\n"
+                + "[能力调用][参数]" + request.getQueryString() +"\n"
+                + "[能力调用][响应]" + msg +"\n"
         );
     }
 

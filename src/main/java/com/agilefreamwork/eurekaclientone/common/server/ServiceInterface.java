@@ -1,7 +1,6 @@
 package com.agilefreamwork.eurekaclientone.common.server;
 
 import com.agilefreamwork.eurekaclientone.common.base.RETURN;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
@@ -11,5 +10,5 @@ public interface ServiceInterface {
 	//提取响应参数
 	HashMap<String, Object> getOutParam();
 	//调用请求方法
-	RETURN executeMethod(String methodName) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,NoSuchMethodException, SecurityException;
+	RETURN executeMethod(String methodName,Object object) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,NoSuchMethodException, SecurityException;
 }

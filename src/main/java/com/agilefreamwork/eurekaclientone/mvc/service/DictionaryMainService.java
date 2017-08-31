@@ -8,15 +8,17 @@ import com.agilefreamwork.eurekaclientone.common.util.ObjectUtil;
 import com.agilefreamwork.eurekaclientone.mvc.model.dao.DictionaryMainRepository;
 import com.agilefreamwork.eurekaclientone.mvc.model.entity.DictionaryMainEntity;
 import com.agilefreamwork.eurekaclientone.restInterfaces.ClientTwoInterface;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 
 
 /**
 * Created by 佟盟
 */
-@Service
+@Component
 public class DictionaryMainService extends MainService {
     @Autowired
     private ClientTwoInterface clientTwoInterface;
@@ -27,13 +29,12 @@ public class DictionaryMainService extends MainService {
      */
     public RETURN save() {
         String a = clientTwoInterface.homePageUrl();
-        this.setOutParam("a",JSONUtil.parse(a));
-        return RETURN.SUCCESS;
+        this.setOutParam("c",JSONUtil.parse(a));
 //        DictionaryMainRepository dao = FactoryUtil.getBean(DictionaryMainRepository.class);
 //        DictionaryMainEntity entity = ObjectUtil.getObjectFromMap(DictionaryMainEntity.class, this.getInParam());
 //        if (entity.hashCode() == 0) return RETURN.PARAMETER_ERROR;
 //        dao.save(entity);
-//        return RETURN.SUCCESS;
+        return RETURN.SUCCESS;
     }
 
     /**

@@ -68,7 +68,7 @@ public class MainController {
      */
     @GetMapping("/get-home-page-url")
     public String homePageUrl(){
-        return this.eurekaClient.getNextServerFromEureka("client-one",false).getHomePageUrl();
+        return this.eurekaClient.getNextServerFromEureka(moduleName,false).getHomePageUrl();
     }
 
     /**
@@ -77,7 +77,7 @@ public class MainController {
      */
     @GetMapping("/get-eureka-client-info")
     public List<ServiceInstance> eurekaInfo(){
-        return this.discoveryClient.getInstances("client-one");
+        return this.discoveryClient.getInstances(moduleName);
     }
 
     /**
@@ -94,6 +94,7 @@ public class MainController {
         modelAndView.addObject("head",new Head(RETURN.NO_COMPLETE,request));
         return modelAndView;
     }
+
     /**
      * agile框架处理器
      * @param request 请求对象
@@ -156,7 +157,7 @@ public class MainController {
         handleRequestUrl(request, authToken, service, method);
 
         //调用目标方法
-        RETURN returnState = this.getService().executeMethod(method);
+        RETURN returnState = this.getService().executeMethod(method,this.applicationContext.getBean(service));
 
         //判断是否转发
         if (!StringUtil.isEmpty(forward) && RETURN.SUCCESS.equals(returnState)) {
@@ -188,14 +189,10 @@ public class MainController {
      * @return  服务bean
      */
     private ServiceInterface getService(String serviceName) throws BeansException,NullPointerException,ClassCastException {
-        try {
             Object serviceTry = this.applicationContext.getBean(serviceName);
             service = (ServiceInterface) serviceTry;
             this.setService(service);
             return service;
-        }catch (Exception e){
-            return null;
-        }
     }
 
     /**

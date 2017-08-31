@@ -29,12 +29,11 @@ public abstract class MainService extends ExceptionHandler implements ServiceInt
      * @param methodName 服务内部的具体方法名
      * @return 返回执行结果
      */
-    public RETURN executeMethod(String methodName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method method = this.getClass().getDeclaredMethod(methodName);
-        return execute(method);
+    public RETURN executeMethod(String methodName,Object object) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        return (RETURN) this.getClass().getDeclaredMethod(methodName).invoke(object);
     }
 //    @Transactional
-    RETURN execute(Method method) throws IllegalAccessException,IllegalArgumentException,InvocationTargetException,SecurityException{
+    protected RETURN execute(Method method) throws IllegalAccessException,IllegalArgumentException,InvocationTargetException,SecurityException{
         //取消安全检测，提高性能
         method.setAccessible(true);
         return (RETURN) method.invoke(this);

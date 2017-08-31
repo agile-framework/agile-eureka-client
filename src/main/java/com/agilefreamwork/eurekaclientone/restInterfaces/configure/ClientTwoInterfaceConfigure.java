@@ -1,4 +1,4 @@
-package com.agilefreamwork.eurekaclientone.restInterfaces;
+package com.agilefreamwork.eurekaclientone.restInterfaces.configure;
 
 import com.agilefreamwork.eurekaclientone.common.annotation.ExcludeComponentScan;
 import feign.Contract;
@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ExcludeComponentScan
 public class ClientTwoInterfaceConfigure {
+
     @Bean
     public Contract feignContract() {
         return new SpringMvcContract();
