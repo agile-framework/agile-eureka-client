@@ -118,8 +118,7 @@ public class MainController {
             @PathVariable String method,
             @RequestParam(value = "forward", required = false) String forward,
             @RequestParam(value = "auth-token", required = false) String authToken,
-            @RequestParam(value = "file-path", required = false) String filePath,
-            @RequestParam(value = "file", required = false) MultipartFile file
+            @RequestParam(value = "file-path", required = false) String filePath
     ) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException {
         //初始化参数
         ModelAndView modelAndView = new ModelAndView();//响应视图对象
@@ -150,9 +149,10 @@ public class MainController {
         //调用目标方法
         RETURN returnState = this.getService().executeMethod(method,this.applicationContext.getBean(service));
 
-        //判断文件下载
-        if (!StringUtil.isEmpty(filePath) && !ObjectUtil.isEmpty(file)) {
-            this.upLoadFile(request, filePath);
+        //判断是否存在文件上传
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+        if (!StringUtil.isEmpty(filePath) && multipartResolver.isMultipart(request)){
+            this.upLoadFile(multipartResolver, request, filePath);
         }
 
         //判断是否转发
@@ -234,37 +234,35 @@ public class MainController {
      * @param path  文件存储路径
      * @throws IOException 流异常
      */
-    private void upLoadFile(HttpServletRequest request, String path) throws NoSuchFieldException, IOException {
+    private void upLoadFile(CommonsMultipartResolver multipartResolver, HttpServletRequest request, String path) throws NoSuchFieldException, IOException {
         List<HashMap<String,Object>> list = new ArrayList<>();
-        //创建一个通用的多部分解析器
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-        if (multipartResolver.isMultipart(request)){
-            //转换成多部分request
-            MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
-            //获取所有文件提交的input名
-            Iterator<String> iterator = multipartHttpServletRequest.getFileNames();
-            while (iterator.hasNext()) {
-                List<MultipartFile> files = multipartHttpServletRequest.getFiles(iterator.next());
-                for (int i = 0 ; i < files.size();i++){
-                    MultipartFile file = files.get(i);
-                    if (!ObjectUtil.isEmpty(file)) {
-                        //取得当前文件名
-                        String fileName = file.getOriginalFilename();
-                        //判断文件是否存在
-                        if (!StringUtil.isEmpty(fileName)) {
-                            File newFile = new File(path + fileName);
-                            file.transferTo(newFile);
-                            HashMap<String,Object> map = new HashMap<>();
-                            map.put("fileName",file.getOriginalFilename());
-                            map.put("fileSize",file.getSize());
-                            map.put("contentType",file.getContentType());
-                            list.add(map);
-                        }
+
+        //转换成多部分request
+        MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
+
+        //获取所有文件提交的input名
+        Iterator<String> iterator = multipartHttpServletRequest.getFileNames();
+        while (iterator.hasNext()) {
+            List<MultipartFile> files = multipartHttpServletRequest.getFiles(iterator.next());
+            for (int i = 0 ; i < files.size();i++){
+                MultipartFile file = files.get(i);
+                if (!ObjectUtil.isEmpty(file)) {
+                    //取得当前文件名
+                    String fileName = file.getOriginalFilename();
+                    //判断文件是否存在
+                    if (!StringUtil.isEmpty(fileName)) {
+                        File newFile = new File(path + fileName);
+                        file.transferTo(newFile);
+                        HashMap<String,Object> map = new HashMap<>();
+                        map.put("fileName",file.getOriginalFilename());
+                        map.put("fileSize",file.getSize());
+                        map.put("contentType",file.getContentType());
+                        list.add(map);
                     }
                 }
             }
-            service.setOutParam("upLoadFile",list);
         }
+        service.setOutParam("upLoadFile",list);
     }
 
     private ServiceInterface getService() {
