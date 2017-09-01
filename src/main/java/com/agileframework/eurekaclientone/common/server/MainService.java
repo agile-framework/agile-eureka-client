@@ -199,7 +199,7 @@ public abstract class MainService extends ExceptionHandler implements ServiceInt
      * @param key 参数索引字符串
      * @param value 参数值
      */
-    protected void setOutParam(String key, Object value) {
+    public void setOutParam(String key, Object value) {
         if(ObjectUtil.isEmpty(this.outParam)){
             this.outParam = new HashMap<>();
         }
@@ -215,6 +215,6 @@ public abstract class MainService extends ExceptionHandler implements ServiceInt
         if(this.containsKey("size")){
             size = this.getInParamOfInteger("size");
         }
-        return new PageRequest(page,size);
+        return PageRequest.of(page,size);
     }
 }

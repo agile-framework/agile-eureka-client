@@ -16,6 +16,7 @@ public final class RETURN {
     public final static RETURN NO_SERVICE = new RETURN("000002","请求服务不存在！");
     public final static RETURN NO_METHOD = new RETURN("000003","请求方法不存在！");
     public final static RETURN NO_COMPLETE = new RETURN("000004","非法请求！");
+    public final static RETURN UPLOAD_SUCCESS = new RETURN("000005","文件上传成功！");
 
     //登陆类响应状态
     public final static RETURN NO_SIGN_IN = new RETURN("100000","账号尚未登陆！");
@@ -40,7 +41,9 @@ public final class RETURN {
     public final static RETURN SECURITY_EXPRESSION = new RETURN("200013","安全错误！");
     public final static RETURN CLASS_CAST_EXPRESSION = new RETURN("200014","对象强制转换错误！");
     public final static RETURN BEAN_EXPRESSION = new RETURN("200015","BEAN错误！");
-
+    public final static RETURN NUSUCH_BEAN_EXPRESSION = new RETURN("200016","找不到指定实体！");
+    public final static RETURN MAX_UPLOAD_SIZE_EXPRESSION = new RETURN("200017","上传文件大小超出最大值！");
+    public final static RETURN FILE_NOT_FOUND_EXPRESSION = new RETURN("200018","系统找不到指定路径！");
     //业务逻辑响应状态
     public final static RETURN PARAMETER_ERROR = new RETURN("300000","请求参数中，未包含可用参数！");
 

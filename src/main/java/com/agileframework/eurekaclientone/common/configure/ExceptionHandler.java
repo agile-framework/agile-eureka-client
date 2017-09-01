@@ -5,11 +5,14 @@ import com.agileframework.eurekaclientone.common.base.RETURN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -79,6 +82,18 @@ public class ExceptionHandler implements HandlerExceptionResolver {
         }else if(e instanceof BeansException){
             logger.error(RETURN.BEAN_EXPRESSION.getMsg());
             modelAndView.addObject("head",new Head(RETURN.BEAN_EXPRESSION,request));
+            return modelAndView;
+        }else if (e instanceof NoSuchBeanDefinitionException){
+            logger.error(RETURN.NUSUCH_BEAN_EXPRESSION.getMsg());
+            modelAndView.addObject("head",new Head(RETURN.NUSUCH_BEAN_EXPRESSION,request));
+            return modelAndView;
+        }else if (e instanceof MaxUploadSizeExceededException){
+            logger.error(RETURN.MAX_UPLOAD_SIZE_EXPRESSION.getMsg());
+            modelAndView.addObject("head",new Head(RETURN.MAX_UPLOAD_SIZE_EXPRESSION,request));
+            return modelAndView;
+        }else if (e instanceof FileNotFoundException){
+            logger.error(RETURN.FILE_NOT_FOUND_EXPRESSION.getMsg());
+            modelAndView.addObject("head",new Head(RETURN.FILE_NOT_FOUND_EXPRESSION,request));
             return modelAndView;
         }else {
             logger.error(RETURN.EXPRESSION.getMsg());

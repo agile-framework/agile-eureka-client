@@ -29,9 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * 主控制层
@@ -121,15 +119,8 @@ public class MainController {
             @RequestParam(value = "forward", required = false) String forward,
             @RequestParam(value = "auth-token", required = false) String authToken,
             @RequestParam(value = "file-path", required = false) String filePath,
-            @RequestParam(value = "file-name", required = false) String fileName
-    ) throws IOException,IllegalAccessException, IllegalArgumentException, InvocationTargetException,NoSuchMethodException, SecurityException {
-
-        //判断文件下载
-        if (!StringUtil.isEmpty(filePath) && !StringUtil.isEmpty(fileName)) {
-            this.downLoadFile(response, filePath, fileName);
-            return null;
-        }
-
+            @RequestParam(value = "file", required = false) MultipartFile file
+    ) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException {
         //初始化参数
         ModelAndView modelAndView = new ModelAndView();//响应视图对象
         service = StringUtil.toLowerName(service);//设置服务名
@@ -158,6 +149,11 @@ public class MainController {
 
         //调用目标方法
         RETURN returnState = this.getService().executeMethod(method,this.applicationContext.getBean(service));
+
+        //判断文件下载
+        if (!StringUtil.isEmpty(filePath) && !ObjectUtil.isEmpty(file)) {
+            this.upLoadFile(request, filePath);
+        }
 
         //判断是否转发
         if (!StringUtil.isEmpty(forward) && RETURN.SUCCESS.equals(returnState)) {
@@ -188,11 +184,15 @@ public class MainController {
      * @param serviceName   服务名
      * @return  服务bean
      */
-    private ServiceInterface getService(String serviceName) throws BeansException,NullPointerException,ClassCastException {
+    private ServiceInterface getService(String serviceName) {
+        try {
             Object serviceTry = this.applicationContext.getBean(serviceName);
             service = (ServiceInterface) serviceTry;
             this.setService(service);
             return service;
+        } catch (BeansException e) {
+            return null;
+        }
     }
 
     /**
@@ -224,7 +224,18 @@ public class MainController {
             }
         }
 
-        //---------------------------------文件上传解析------------------------------------
+        //将处理过的所有请求参数传入调用服务对象
+        this.getService().setInParam(inParam);
+    }
+
+    /**
+     * 文件下载
+     * @param request  请求对象
+     * @param path  文件存储路径
+     * @throws IOException 流异常
+     */
+    private void upLoadFile(HttpServletRequest request, String path) throws NoSuchFieldException, IOException {
+        List<HashMap<String,Object>> list = new ArrayList<>();
         //创建一个通用的多部分解析器
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
         if (multipartResolver.isMultipart(request)){
@@ -232,53 +243,27 @@ public class MainController {
             MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
             //获取所有文件提交的input名
             Iterator<String> iterator = multipartHttpServletRequest.getFileNames();
-            while (iterator.hasNext()){
-                MultipartFile file = multipartHttpServletRequest.getFile(iterator.next());
-                if (ObjectUtil.isEmpty(file)){
-                    //取得当前文件名
-                    String fileName = file.getOriginalFilename();
-                    //判断文件是否存在
-                    if (StringUtil.isEmpty(fileName)){
-                        inParam.put(fileName,file);
+            while (iterator.hasNext()) {
+                List<MultipartFile> files = multipartHttpServletRequest.getFiles(iterator.next());
+                for (int i = 0 ; i < files.size();i++){
+                    MultipartFile file = files.get(i);
+                    if (!ObjectUtil.isEmpty(file)) {
+                        //取得当前文件名
+                        String fileName = file.getOriginalFilename();
+                        //判断文件是否存在
+                        if (!StringUtil.isEmpty(fileName)) {
+                            File newFile = new File(path + fileName);
+                            file.transferTo(newFile);
+                            HashMap<String,Object> map = new HashMap<>();
+                            map.put("fileName",file.getOriginalFilename());
+                            map.put("fileSize",file.getSize());
+                            map.put("contentType",file.getContentType());
+                            list.add(map);
+                        }
                     }
                 }
             }
-        }
-
-        //将处理过的所有请求参数传入调用服务对象
-        this.getService().setInParam(inParam);
-    }
-
-    /**
-     * 文件下载
-     * @param response  响应对象
-     * @param path  文件存储路径
-     * @param name  文件名
-     * @throws IOException 流异常
-     */
-    private void downLoadFile(HttpServletResponse response,String path,String name) throws IOException {
-        BufferedInputStream bis = null;
-        BufferedOutputStream bos = null;
-        try {
-            long fileLength = new File(path).length();
-            response.setContentType("application/force-download");
-            response.setHeader("Content-Length", String.valueOf(fileLength));
-            response.setHeader("Content-Disposition", "attachment; filename=" + new String(name.getBytes("utf-8"), "utf-8"));
-            bis = new BufferedInputStream(new FileInputStream(path));
-            bos = new BufferedOutputStream(response.getOutputStream());
-            byte[] buff = new byte[2048];
-            int bytesRead;
-            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
-                bos.write(buff, 0, bytesRead);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        } finally {
-            if (bis != null)
-                bis.close();
-            if (bos != null)
-                bos.close();
+            service.setOutParam("upLoadFile",list);
         }
     }
 
