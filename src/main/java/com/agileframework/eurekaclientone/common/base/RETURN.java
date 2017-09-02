@@ -17,6 +17,10 @@ public final class RETURN {
     public final static RETURN NO_METHOD = new RETURN("000003","请求方法不存在！");
     public final static RETURN NO_COMPLETE = new RETURN("000004","非法请求！");
     public final static RETURN UPLOAD_SUCCESS = new RETURN("000005","文件上传成功！");
+    public final static RETURN UPLOAD_ERROR = new RETURN("000006","文件上传过程中发生错误，上传失败！");
+    public final static RETURN MADE_DIR_FAIL = new RETURN("000007","文件夹创建失败！");
+    public final static RETURN EMPTY_FILE = new RETURN("000008","空文件，上传失败！");
+    public final static RETURN EMPTY_FILENAME = new RETURN("000009","空文件名，上传失败！");
 
     //登陆类响应状态
     public final static RETURN NO_SIGN_IN = new RETURN("100000","账号尚未登陆！");
@@ -52,7 +56,7 @@ public final class RETURN {
         this.msg = msg;
     }
 
-    String getCode() {
+    public String getCode() {
         return code;
     }
 
