@@ -47,10 +47,6 @@ public class ExceptionHandler implements HandlerExceptionResolver {
             logger.error(RETURN.PARSE_EXPRESSION.getMsg());
             modelAndView.addObject("head",new Head(RETURN.PARSE_EXPRESSION,request));
             return modelAndView;
-        }else if(e instanceof IOException){
-            logger.error(RETURN.IO_EXPRESSION.getMsg());
-            modelAndView.addObject("head",new Head(RETURN.IO_EXPRESSION,request));
-            return modelAndView;
         }else if(e instanceof TimeoutException){
             logger.error(RETURN.TIMEOUT_EXPRESSION.getMsg());
             modelAndView.addObject("head",new Head(RETURN.TIMEOUT_EXPRESSION,request));

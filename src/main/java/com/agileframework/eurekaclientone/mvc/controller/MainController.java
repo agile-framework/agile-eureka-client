@@ -296,7 +296,8 @@ public class MainController {
      * @return 文件流
      * @throws FileNotFoundException 流异常
      */
-    private ResponseEntity<byte[]> downloadFile(String path ,String fileName) throws FileNotFoundException{
+    @RequestMapping("/download")
+    private ResponseEntity<byte[]> downloadFile(@RequestParam(value = "path") String path ,@RequestParam(value = "fileName") String fileName) throws FileNotFoundException{
         File file = new File(path,fileName);
         byte[] byteFile;
         try {
