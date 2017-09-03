@@ -228,7 +228,7 @@ public class MainController {
      * 文件下载
      * @param request  请求对象
      * @param path  文件存储路径
-     * @param serviceProxy
+     * @param serviceProxy 服务代理类
      */
     private void upLoadFile(HttpServletRequest request, String path, ServiceInterface serviceProxy){
         List<HashMap<String,Object>> list = new ArrayList<>();

@@ -1,7 +1,6 @@
 package com.agileframework.eurekaclientone;
 
 import com.agileframework.eurekaclientone.common.annotation.ExcludeComponentScan;
-import com.agileframework.eurekaclientone.common.configure.UploadSettings;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,7 +25,7 @@ import org.springframework.context.annotation.FilterType;
 //开启自动配置
 @EnableAutoConfiguration
 //开启自定义系统属性配置
-@EnableConfigurationProperties({UploadSettings.class, JpaProperties.class})
+@EnableConfigurationProperties({JpaProperties.class})
 //排除加载范围
 @ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION,value = ExcludeComponentScan.class)})
 //扫面servlet注解

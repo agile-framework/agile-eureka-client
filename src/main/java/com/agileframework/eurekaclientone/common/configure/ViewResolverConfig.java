@@ -1,17 +1,14 @@
 package com.agileframework.eurekaclientone.common.configure;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.accept.ContentNegotiationManager;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 
 import java.util.ArrayList;
@@ -24,19 +21,16 @@ import java.util.Map;
  */
 @Configuration
 @EnableWebMvc
-public class ViewResolverConfig extends WebMvcConfigurerAdapter {
-
-    private final UploadSettings uploadSettings;
+public class ViewResolverConfig implements WebMvcConfigurer {
 
     private final JsonViewResolver jsonViewResolver;
 
     private final XmlViewResolver xmlViewResolver;
 
     @Autowired
-    public ViewResolverConfig(JsonViewResolver jsonViewResolver, XmlViewResolver xmlViewResolver, UploadSettings uploadSettings) {
+    public ViewResolverConfig(JsonViewResolver jsonViewResolver, XmlViewResolver xmlViewResolver) {
         this.jsonViewResolver = jsonViewResolver;
         this.xmlViewResolver = xmlViewResolver;
-        this.uploadSettings = uploadSettings;
     }
 
     @Bean
@@ -49,15 +43,6 @@ public class ViewResolverConfig extends WebMvcConfigurerAdapter {
         resolver.setContentNegotiationManager(manager);
         resolver.setOrder(1);
         resolver.setViewResolvers(list);
-        return resolver;
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix = "agile.mvc.upload")
-    public CommonsMultipartResolver commonsMultipartResolver(){
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSize(uploadSettings.getMaxUploadSize());
-        resolver.setDefaultEncoding(uploadSettings.getDefaultEncoding());
         return resolver;
     }
 
