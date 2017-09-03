@@ -21,7 +21,6 @@ public final class StringUtil extends StringUtils {
         String regex = Constant.RegularAbout.HUMP;
         if(ObjectUtil.isEmpty(getMatchedString(regex, text)))return text;
         
-        text = text.toLowerCase();
         StringBuilder cacheStr = new StringBuilder(text);
         Matcher matcher = Pattern.compile(regex).matcher(text);
         int i = 0;

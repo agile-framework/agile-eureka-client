@@ -5,6 +5,7 @@ import com.agileframework.eurekaclientone.common.base.RETURN;
 import com.agileframework.eurekaclientone.common.util.ObjectUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 

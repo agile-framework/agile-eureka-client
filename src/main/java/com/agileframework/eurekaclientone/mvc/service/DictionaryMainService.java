@@ -9,13 +9,16 @@ import com.agileframework.eurekaclientone.mvc.model.dao.DictionaryMainRepository
 import com.agileframework.eurekaclientone.mvc.model.entity.DictionaryMainEntity;
 import com.agileframework.eurekaclientone.restInterfaces.ClientTwoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
 /**
 * Created by 佟盟
 */
-@Component
+@Service
+@Scope("prototype")
 public class DictionaryMainService extends MainService {
     @Autowired
     private ClientTwoInterface clientTwoInterface;
