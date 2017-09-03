@@ -39,15 +39,15 @@ public class DictionaryMainService extends MainService {
      * 地址：http://localhost:8080/agile/DictionaryMainService/delete
      */
     public RETURN delete(){
-        DictionaryMainRepository dao = FactoryUtil.getBean(DictionaryMainRepository.class);
-        if (this.containsKey("ids")){
-            String[] ids = this.getInParamOfString("ids").split(",");
-            for (int i = 0 ; i < ids.length ; i++) {
-                dao.deleteById((Integer) ObjectUtil.cast(Integer.class,ids[i].trim()));
-            }
+//        DictionaryMainRepository dao = FactoryUtil.getBean(DictionaryMainRepository.class);
+//        if (this.containsKey("ids")){
+//            String[] ids = this.getInParamOfString("ids").split(",");
+//            for (int i = 0 ; i < ids.length ; i++) {
+//                dao.deleteById((Integer) ObjectUtil.cast(Integer.class,ids[i].trim()));
+//            }
             return RETURN.SUCCESS;
-        }
-        return RETURN.PARAMETER_ERROR;
+//        }
+//        return RETURN.PARAMETER_ERROR;
     }
 
     /**

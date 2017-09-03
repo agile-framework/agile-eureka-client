@@ -10,8 +10,6 @@ import com.agileframework.eurekaclientone.common.util.StringUtil;
 import com.google.common.base.Charsets;
 import com.netflix.discovery.EurekaClient;
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,16 +41,10 @@ import java.util.*;
  * Created by 佟盟 on 2017/8/22
  */
 @Controller
-@Scope("prototype")
 public class MainController {
 
-    //日志工具
-    private Logger logger = LogManager.getLogger(this.getClass());
-    //上下文
     private final ApplicationContext applicationContext;
-    //服务对象
-    private ServiceInterface service;
-    //工程名
+
     @Value("${spring.application.name}")
     private String moduleName;
 
@@ -90,7 +82,7 @@ public class MainController {
      * @param request 请求对象
      * @return 响应视图
      */
-    @RequestMapping(value = {"/","/*","/*/*","/*/*/*/*/**"})
+    @RequestMapping(value = {"/","/*","/*/*/*/**"})
     public ModelAndView processor(HttpServletRequest request){
         //初始化参数
         ModelAndView modelAndView = new ModelAndView();
@@ -115,11 +107,10 @@ public class MainController {
      * @throws NoSuchMethodException 没有这样的方法异常
      * @throws SecurityException 安全异常
      */
-    @RequestMapping(value = "/{module}/{service}/{method}")
+    @RequestMapping(value = "/{service}/{method}")
     public ModelAndView processor(
             HttpServletRequest request,
             HttpServletResponse response,
-            @PathVariable String module,
             @PathVariable String service,
             @PathVariable String method,
             @RequestParam(value = "forward", required = false) String forward,
@@ -127,17 +118,12 @@ public class MainController {
     ) throws IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         //初始化参数
         ModelAndView modelAndView = new ModelAndView();//响应视图对象
-        service = StringUtil.toLowerName(service);//设置服务名
+        service =  StringUtil.toLowerName(service);//设置服务名
+        ServiceInterface serviceProxy = this.getService(StringUtil.toLowerName(service));
         method = StringUtil.toLowerName(method);//设置方法名
 
-        //判断模块存在
-        if (StringUtil.isEmpty(module) || !module.equals(moduleName)) {
-            modelAndView.addObject(Constant.ResponseAbout.HEAD, new Head(RETURN.NO_MODULE, request));
-            return modelAndView;
-        }
-
         //判断服务存在
-        if (StringUtil.isEmpty(service) || ObjectUtil.isEmpty(this.getService(service))) {
+        if (StringUtil.isEmpty(service) || ObjectUtil.isEmpty(serviceProxy)) {
             modelAndView.addObject(Constant.ResponseAbout.HEAD, new Head(RETURN.NO_SERVICE, request));
             return modelAndView;
         }
@@ -149,28 +135,38 @@ public class MainController {
         }
 
         //调用目标方法前处理入参
-        handleRequestUrl(request,service, method);
+        handleRequestUrl(request,service,serviceProxy, method);
 
         //调用目标方法
-        RETURN returnState = this.getService().executeMethod(method,this.applicationContext.getBean(service));
+        RETURN returnState = serviceProxy.executeMethod(method,serviceProxy);
 
         //判断是否存在文件上传
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
         if (!StringUtil.isEmpty(filePath) && multipartResolver.isMultipart(request)){
-            this.upLoadFile(request, filePath);
+            this.upLoadFile(request, filePath,serviceProxy);
         }
 
         //判断是否转发
         if (!StringUtil.isEmpty(forward) && RETURN.SUCCESS.equals(returnState)) {
+            StringBuilder url = new StringBuilder(forward);
+            if(!forward.startsWith(Constant.RegularAbout.SLASH)){
+                url.insert(0,Constant.RegularAbout.SLASH);
+            }
 
             //过滤转发并获取请求参数，避免重复转发
-            String afterParam = request.getQueryString().replaceFirst("forward[-_*%#$@+=()^!~`|.,/a-zA-Z0-9]+[&]?", "");
+            String beforeParam = request.getQueryString().replaceFirst(Constant.RegularAbout.AFTER_PARAM, Constant.RegularAbout.NULL);
 
             //服务间参数传递
-            String beforeParam = StringUtil.fromMapToUrl(this.getService().getOutParam());
+            String afterParam = StringUtil.fromMapToUrl(serviceProxy.getOutParam());
+
+
+            url = (StringUtil.isEmpty(beforeParam) && StringUtil.isEmpty(afterParam))?url
+                    :(StringUtil.compareTo(beforeParam,afterParam)>0)?url.append(Constant.RegularAbout.QUESTION_MARK).append(beforeParam).append(Constant.RegularAbout.AND).append(afterParam)
+                    :url.append(Constant.RegularAbout.QUESTION_MARK).append(afterParam).append(Constant.RegularAbout.AND).append(beforeParam);
+            url = url.toString().endsWith(Constant.RegularAbout.AND)?url.deleteCharAt(url.lastIndexOf(Constant.RegularAbout.AND)):url;
 
             //转发
-            modelAndView.setView(new RedirectView(forward + (StringUtil.isEmpty(afterParam + beforeParam) ? "" : "?" + afterParam + beforeParam)));
+            modelAndView.setView(new RedirectView(url.toString()));
 
             return modelAndView;
         }
@@ -179,7 +175,7 @@ public class MainController {
         modelAndView.addObject(Constant.ResponseAbout.HEAD, new Head(returnState, request));
 
         //响应数据装填
-        modelAndView.addObject(Constant.ResponseAbout.RESULT, this.getService().getOutParam());
+        modelAndView.addObject(Constant.ResponseAbout.RESULT, serviceProxy.getOutParam());
 
         return modelAndView;
     }
@@ -192,9 +188,7 @@ public class MainController {
     private ServiceInterface getService(String serviceName) {
         try {
             Object serviceTry = this.applicationContext.getBean(serviceName);
-            service = (ServiceInterface) serviceTry;
-            this.setService(service);
-            return service;
+            return (ServiceInterface) serviceTry;
         } catch (BeansException e) {
             return null;
         }
@@ -207,7 +201,7 @@ public class MainController {
      * @param method    目标方法名
      * @throws IOException 流异常
      */
-    private void handleRequestUrl(HttpServletRequest request, String service,String method) throws IOException {
+    private void handleRequestUrl(HttpServletRequest request, String service, ServiceInterface serviceProxy, String method) throws IOException {
         HashMap<String, Object> inParam = new HashMap<>();
         inParam.put(Constant.ResponseAbout.APP,moduleName);
         inParam.put(Constant.ResponseAbout.SERVICE,service);
@@ -228,15 +222,16 @@ public class MainController {
         }
 
         //将处理过的所有请求参数传入调用服务对象
-        this.getService().setInParam(inParam);
+        serviceProxy.setInParam(inParam);
     }
 
     /**
      * 文件下载
      * @param request  请求对象
      * @param path  文件存储路径
+     * @param serviceProxy
      */
-    private void upLoadFile(HttpServletRequest request, String path){
+    private void upLoadFile(HttpServletRequest request, String path, ServiceInterface serviceProxy){
         List<HashMap<String,Object>> list = new ArrayList<>();
 
         //转换成多部分request
@@ -292,7 +287,7 @@ public class MainController {
                 list.add(map);
             }
         }
-        service.setOutParam(Constant.FileAbout.UP_LOUD_FILE_INFO,list);
+        serviceProxy.setOutParam(Constant.FileAbout.UP_LOUD_FILE_INFO,list);
     }
 
     /**
@@ -316,13 +311,4 @@ public class MainController {
         headers.setContentDispositionFormData(Constant.HeaderAbout.ATTACHMENT,new String(fileName.getBytes(Charsets.UTF_8), Charsets.ISO_8859_1));
         return new ResponseEntity<>(byteFile, headers, HttpStatus.CREATED);
     }
-
-    private ServiceInterface getService() {
-        return service;
-    }
-
-    private void setService(ServiceInterface service) {
-        this.service = service;
-    }
-
 }

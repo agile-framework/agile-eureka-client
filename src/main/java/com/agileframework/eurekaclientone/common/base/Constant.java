@@ -36,4 +36,15 @@ public class Constant {
     public static class HeaderAbout {
         public final static String ATTACHMENT = "attachment";
     }
+
+    public static class RegularAbout {
+        public final static String NULL = "";
+        public final static String QUESTION_MARK = "?";
+        public final static String SLASH = "/";
+        public final static String BACKSLASH = "\\";
+        public final static String AND = "&";
+        public final static String EQUAL = "=";
+        public final static String AFTER_PARAM = "forward[-_*%#$@+=()^!~`|.,/a-zA-Z0-9]+[&]?";
+        public final static String HUMP = "((?=[\\x21-\\x7e]+)[^A-Za-z0-9])";
+    }
 }

@@ -11,8 +11,7 @@ public final class RETURN {
     private String msg = "操作执行成功";
 
     //请求类响应状态
-    public final static RETURN SUCCESS = new RETURN("000000","服务执行成功！");
-    public final static RETURN NO_MODULE = new RETURN("000001","请求模块不存在！");
+    public final static RETURN SUCCESS = new RETURN("000001","服务执行成功！");
     public final static RETURN NO_SERVICE = new RETURN("000002","请求服务不存在！");
     public final static RETURN NO_METHOD = new RETURN("000003","请求方法不存在！");
     public final static RETURN NO_COMPLETE = new RETURN("000004","非法请求！");

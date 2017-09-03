@@ -6,6 +6,7 @@ import com.agileframework.eurekaclientone.common.util.ObjectUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,7 +33,7 @@ public abstract class MainService extends ExceptionHandler implements ServiceInt
     public RETURN executeMethod(String methodName,Object object) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         return (RETURN) this.getClass().getDeclaredMethod(methodName).invoke(object);
     }
-//    @Transactional
+    @Transactional
     protected RETURN execute(Method method) throws IllegalAccessException,IllegalArgumentException,InvocationTargetException,SecurityException{
         //取消安全检测，提高性能
         method.setAccessible(true);

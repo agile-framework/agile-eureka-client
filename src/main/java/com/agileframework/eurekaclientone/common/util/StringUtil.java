@@ -1,6 +1,8 @@
 package com.agileframework.eurekaclientone.common.util;
 
+import com.agileframework.eurekaclientone.common.base.Constant;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.Page;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -12,11 +14,11 @@ import java.util.regex.Pattern;
 public final class StringUtil extends StringUtils {
     /**
      * 特殊符号转驼峰式
-     * @text text 任意字符串
+     * @param text 任意字符串
      * @return 返回驼峰字符串
      */
     public static String signToCamel(String text){
-        String regex = "((?=[\\x21-\\x7e]+)[^A-Za-z0-9])";
+        String regex = Constant.RegularAbout.HUMP;
         if(ObjectUtil.isEmpty(getMatchedString(regex, text)))return text;
         
         text = text.toLowerCase();
@@ -32,7 +34,7 @@ public final class StringUtil extends StringUtils {
 
     /**
      * 字符串转首字母大写驼峰名
-     * @text text 任意字符串
+     * @param text 任意字符串
      * @return 返回首字母大写的驼峰字符串
      */
     public static String toUpperName(String text){
@@ -43,7 +45,7 @@ public final class StringUtil extends StringUtils {
 
     /**
      * 字符串转首字母小写驼峰名
-     * @text text 任意字符串
+     * @param text 任意字符串
      * @return 返回首字母小写的驼峰字符串
      */
     public static String toLowerName(String text){
@@ -54,22 +56,25 @@ public final class StringUtil extends StringUtils {
 
     /**
      * map格式转url参数路径
-     * @text map 参数集合
-     * @return url
+     * @param map 参数集合
+     * @return url参数
      */
     public static String fromMapToUrl(HashMap<String,Object> map){
-        StringBuffer mapOfString = new StringBuffer();
+        StringBuilder mapOfString = new StringBuilder(Constant.RegularAbout.NULL);
         for (HashMap.Entry<String, Object> entity : map.entrySet()) {
-            mapOfString.append("&").append(entity.getKey());
-            mapOfString.append("=").append(entity.getValue());
+            if(!(entity.getValue() instanceof Page)){
+                mapOfString.append(Constant.RegularAbout.AND).append(entity.getKey());
+                mapOfString.append(Constant.RegularAbout.EQUAL).append(entity.getValue());
+            }
         }
-        return String.valueOf(mapOfString);
+        String urlParam = mapOfString.toString();
+        return urlParam.startsWith(Constant.RegularAbout.AND)?urlParam.substring(1):urlParam;
     }
 
     /**
      * 字符串比较
-     * @text resource 比较方
-     * @text target 参照方
+     * @param resource 比较方
+     * @param target 参照方
      * @return 是否相同
      */
     public static boolean compare(String resource, String target){
@@ -78,8 +83,8 @@ public final class StringUtil extends StringUtils {
 
     /**
      * 获取字符串中匹配正则表达式的部分
-     * @text regex 正则表达式
-     * @text text 正文
+     * @param regex 正则表达式
+     * @param text 正文
      * @return 匹配的字符串
      */
     public static String getMatchedString(String regex,String text){
@@ -88,9 +93,9 @@ public final class StringUtil extends StringUtils {
 
     /**
      * 获取字符串中匹配正则表达式的部分
-     * @text regex 正则表达式
-     * @text text 正文
-     * @text index 第几组
+     * @param regex 正则表达式
+     * @param text 正文
+     * @param index 第几组
      * @return 匹配的字符串
      */
     public static String getMatchedString(String regex,String text,int index){
@@ -100,5 +105,9 @@ public final class StringUtil extends StringUtils {
             return matcher.group(index);
         }
         return null;
+    }
+
+    public static int compareTo(String resource,String target){
+        return resource.length()-target.length();
     }
 }
