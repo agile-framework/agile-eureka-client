@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
@@ -36,6 +37,8 @@ import org.springframework.context.annotation.FilterType;
 @EnableFeignClients
 //开启Hystirx
 @EnableCircuitBreaker
+//开启刷新功能
+@RefreshScope
 public class EurekaClientOneApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EurekaClientOneApplication.class, args);
