@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "client-two",fallbackFactory = ClientTwoInterfaceFallbackFactory.class)
 public interface ClientTwoInterface {
     @RequestMapping(value = "/DictionaryMainService/query",method = RequestMethod.GET)
-    String homePageUrl();
+    String queryClientTwoInfo();
 }

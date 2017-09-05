@@ -20,7 +20,7 @@ public class ClientTwoInterfaceFallbackFactory implements FallbackFactory<Client
     public ClientTwoInterface create(Throwable throwable) {
         return new ClientTwoInterface() {
             @Override
-            public String homePageUrl() {
+            public String queryClientTwoInfo() {
                 return "false";
             }
         };

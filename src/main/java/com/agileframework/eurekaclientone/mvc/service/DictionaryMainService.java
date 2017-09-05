@@ -28,7 +28,7 @@ public class DictionaryMainService extends MainService {
      * 地址：http://localhost:8080/agile/DictionaryMainService/save
      */
     public RETURN save() {
-        String a = clientTwoInterface.homePageUrl();
+        String a = clientTwoInterface.queryClientTwoInfo();
         this.setOutParam("c",JSONUtil.parse(a));
 //        DictionaryMainRepository dao = FactoryUtil.getBean(DictionaryMainRepository.class);
 //        DictionaryMainEntity entity = ObjectUtil.getObjectFromMap(DictionaryMainEntity.class, this.getInParam());
